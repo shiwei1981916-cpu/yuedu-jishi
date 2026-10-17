@@ -239,9 +239,12 @@ test('R7-RES-2 配额正常-成功点亮并持久化（回归）', async ({ page
 });
 
 // ---------- 合规-首启告知（P0 未成年人保护）----------
-test('合规-首启告知出现并可关闭', async ({ context }) => {
-  // 全新页面（不注入 yljs_agreed），模拟首次打开
-  const p = await context.newPage();
+test('合规-首启告知出现并可关闭', async ({ browser }) => {
+  // 用全新隔离 context（localStorage 为空），真正模拟首次打开
+  // 注：Playwright 同 context 内 localStorage 按源共享，beforeEach 给主页面注入过 yljs_agreed，
+  // 故这里必须新建 context，否则会读到已被同意的标记。
+  const ctx = await browser.newContext();
+  const p = await ctx.newPage();
   await p.goto(FILE);
   await expect(p.locator('#agreeOverlay')).toBeVisible();
   await p.getByRole('button', { name: /我明白了，开始阅读/ }).click();
@@ -250,5 +253,5 @@ test('合规-首启告知出现并可关闭', async ({ context }) => {
   // 刷新后不再出现
   await p.reload();
   await expect(p.locator('#agreeOverlay')).toBeHidden();
-  await p.close();
+  await ctx.close();
 });
