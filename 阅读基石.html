@@ -82,6 +82,24 @@
   .star-pop{animation:pop .5s ease both}
   .encourage{background:#fff7e6;border:1px solid #f3dca6;border-radius:16px;padding:10px 14px;
     font-size:13.5px;color:#b9821a;margin-top:12px;display:flex;gap:8px;align-items:center}
+  /* 课本单元指引卡 (FEATURE 3) */
+  .guide-card{background:var(--teal-soft);border:1px solid var(--line);border-radius:14px;
+    font-size:13px;color:var(--ink);padding:11px 14px;margin-bottom:14px;line-height:1.65}
+  /* 未成年人保护首启告知 (FEATURE 1) */
+  .agree-overlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
+    background:rgba(58,74,82,.92);padding:20px}
+  .agree-card{background:var(--paper);border-radius:22px;max-width:520px;width:100%;padding:26px 22px;
+    box-shadow:var(--shadow);text-align:left}
+  .agree-h{font-size:22px;font-weight:700;margin:0 0 16px;color:var(--ink);text-align:center;letter-spacing:1px}
+  .agree-list{margin:0 0 20px;padding-left:20px}
+  .agree-list li{font-size:14.5px;line-height:1.7;color:var(--ink);margin-bottom:13px}
+  .agree-list li b{color:var(--teal)}
+  .agree-btn{display:block;width:100%;background:var(--teal);color:#fff;border:none;border-radius:999px;
+    padding:13px 20px;font-size:16px;font-weight:700;cursor:pointer;transition:transform .12s}
+  .agree-btn:active{transform:scale(.97)}
+  @media (prefers-reduced-motion: reduce){
+    .agree-btn,.tile,.ucard,.btn,.star-pop{transition:none!important;animation:none!important}
+  }
 </style>
 </head>
 <body>
@@ -125,6 +143,7 @@
   <section id="detail" class="hidden">
     <div class="detail">
       <div class="dtag"><span class="tag" id="dTag"></span></div>
+      <div class="guide-card" id="guideCard"></div>
       <div class="panel">
         <div class="lab">这一单元 · 主题</div>
         <div class="reading-big" id="dTheme"></div>
@@ -173,9 +192,22 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- 未成年人保护首启告知 (FEATURE 1) -->
+<div class="agree-overlay" id="agreeOverlay" role="dialog" aria-modal="true" aria-label="使用须知">
+  <div class="agree-card">
+    <h2 class="agree-h">小读者的阅读基石</h2>
+    <ul class="agree-list">
+      <li><b>数据只留在本机：</b>本工具完全在你的手机或电脑本地运行。你点亮的星星、写下的小记，只存在这台设备里，不会上传到任何服务器。</li>
+      <li><b>适龄陪伴：</b>适合 8–12 岁小朋友。建议在家长或老师陪伴下使用。</li>
+      <li><b>护眼时长：</b>为了保护眼睛，建议每次不超过 20 分钟，每天不超过 40 分钟。</li>
+    </ul>
+    <button class="agree-btn" id="agreeBtn" type="button">我明白了，开始阅读</button>
+  </div>
+</div>
+
 <script>
 const DATA = [{"grade": "三年级上册", "unit": "第一单元", "theme": "美丽的校园，成长的摇篮，梦想启航的地方。", "reading": "读书时，把那些让你觉得新鲜、好玩的词句圈出来，多读几遍。", "writing": "拿起笔写一写，感受把心里话变成文字的快乐。", "raw": "读书时，把那些让你觉得新鲜、好玩的词句圈出来，多读几遍。拿起笔写一写，感受把心里话变成文字的快乐。"}, {"grade": "三年级上册", "unit": "第二单元", "theme": "金秋的阳光", "reading": "遇到不认识的词，用查字典、看插图或联系上下文这几种办法弄懂它。", "writing": "每天记下一件身边的小事，这就是写日记。", "raw": "遇到不认识的词，用查字典、看插图或联系上下文这几种办法弄懂它。每天记下一件身边的小事，这就是写日记。"}, {"grade": "三年级上册", "unit": "第三单元", "theme": "游历奇妙的童话王国。", "reading": "读童话时，好好享受作者那些天马行空的奇妙点子。", "writing": "你也来当一回童话作家，编一个属于自己的小故事。", "raw": "读童话时，好好享受作者那些天马行空的奇妙点子。你也来当一回童话作家，编一个属于自己的小故事。"}, {"grade": "三年级上册", "unit": "第四单元", "theme": "猜测与推想，是我们的阅读之旅充满了乐趣。", "reading": "读故事时边读边猜接下来会怎样，并学几招靠谱的猜测办法。", "writing": "故事读完了，试着接着往下编，给故事一个全新的结尾。", "raw": "读故事时边读边猜接下来会怎样，并学几招靠谱的猜测办法。故事读完了，试着接着往下编，给故事一个全新的结尾。"}, {"grade": "三年级上册", "unit": "第五单元", "theme": "生活中不缺少美，只是缺少发现美的眼睛。——罗丹", "reading": "读读作者怎么用眼睛和心，留意身边一草一木的。", "writing": "睁大眼睛仔细看，再把你看到的、发现的写下来。", "raw": "读读作者怎么用眼睛和心，留意身边一草一木的。睁大眼睛仔细看，再把你看到的、发现的写下来。"}, {"grade": "三年级上册", "unit": "第六单元", "theme": "祖国，我爱你。", "reading": "一段话里有特别重要的句子，抓住它就能明白整段讲什么。", "writing": "写一段话前先想好一个中心意思，再围绕它来写。", "raw": "一段话里有特别重要的句子，抓住它就能明白整段讲什么。写一段话前先想好一个中心意思，再围绕它来写。"}, {"grade": "三年级上册", "unit": "第七单元", "theme": "大自然赐给我们许多珍贵的礼物。", "reading": "读读课文里那些写得活灵活现的句子，把喜欢的抄进积累本。", "writing": "留意生活里的小发现，随时把心里的想法记下来。", "raw": "读读课文里那些写得活灵活现的句子，把喜欢的抄进积累本。留意生活里的小发现，随时把心里的想法记下来。"}, {"grade": "三年级上册", "unit": "第八单元", "theme": "美好的品质。", "reading": "不出声地读，边读边在心里提问，这样能把课文读明白。", "writing": "选一件小事，按先后顺序把它清清楚楚地写下来。", "raw": "不出声地读，边读边在心里提问，这样能把课文读明白。选一件小事，按先后顺序把它清清楚楚地写下来。"}, {"grade": "三年级下册", "unit": "第一单元", "theme": "大自然中，处处有可爱的生灵。", "reading": "读故事时，一边读一边在脑子里画出画面，再找找那些优美生动的句子。", "writing": "试着把你观察到的东西，清清楚楚地写下来。", "raw": "读故事时，一边读一边在脑子里画出画面，再找找那些优美生动的句子。试着把你观察到的东西，清清楚楚地写下来。"}, {"grade": "三年级下册", "unit": "第二单元", "theme": "寓言是生活的一面镜子。", "reading": "读寓言时，你要读懂故事里藏着的道理。", "writing": "看图写话，把画上有什么清清楚楚写出来。", "raw": "读寓言时，你要读懂故事里藏着的道理。看图写话，把画上有什么清清楚楚写出来。"}, {"grade": "三年级下册", "unit": "第三单元", "theme": "深厚的传统文化，中国人的根。", "reading": "读书时，看看作者怎么围绕一个意思，把一段话说明白。", "writing": "你可以搜集过节资料，聊聊习俗，再把怎么过节写出来。", "raw": "读书时，看看作者怎么围绕一个意思，把一段话说明白。你可以搜集过节资料，聊聊习俗，再把怎么过节写出来。"}, {"grade": "三年级下册", "unit": "第四单元", "theme": "自然如此奇妙，留心观察，会有新的发现。", "reading": "读一段文字，找找关键的句子，用它说出这段话讲什么。", "writing": "仔细观察东西的变化，把做实验的过程写明白。", "raw": "读一段文字，找找关键的句子，用它说出这段话讲什么。仔细观察东西的变化，把做实验的过程写明白。"}, {"grade": "三年级下册", "unit": "第五单元", "theme": "想象力比知识更重要。——爱因斯坦", "reading": "读故事时，钻进奇妙的想象里，感受它有多神奇。", "writing": "试着张开想象的翅膀编故事，造出你自己的小世界。", "raw": "读故事时，钻进奇妙的想象里，感受它有多神奇。试着张开想象的翅膀编故事，造出你自己的小世界。"}, {"grade": "三年级下册", "unit": "第六单元", "theme": "在童年的百花园里，我看到了真善美。", "reading": "遇到读不懂的句子，你可以用好几种办法弄明白它。", "writing": "写写你身边熟悉的人，试着把他的特别之处写出来。", "raw": "遇到读不懂的句子，你可以用好几种办法弄明白它。写写你身边熟悉的人，试着把他的特别之处写出来。"}, {"grade": "三年级下册", "unit": "第七单元", "theme": "天地间隐藏着无穷无尽的奥秘，等待我们去寻找。", "reading": "读书时，看看作者从哪些方面，把一个东西讲明白。", "writing": "试着把查到的材料整理好，向大家介绍一种东西。", "raw": "读书时，看看作者从哪些方面，把一个东西讲明白。试着把查到的材料整理好，向大家介绍一种东西。"}, {"grade": "三年级下册", "unit": "第八单元", "theme": "有趣的故事，留下的不仅是开心的笑声，还有更多的思考。", "reading": "读完后，先弄清故事讲了什么，再用自己的话讲一遍。", "writing": "照着给出的提示，张开想象，试着编一个童话。", "raw": "读完后，先弄清故事讲了什么，再用自己的话讲一遍。照着给出的提示，张开想象，试着编一个童话。"}, {"grade": "四年级上册", "unit": "第一单元", "theme": "江流天地外，山色有无中。——王维", "reading": "读美景时，一边读一边在脑中画画，体会大自然的美好。", "writing": "你可以给同学介绍一个好去处，说清为什么推荐它。", "raw": "读美景时，一边读一边在脑中画画，体会大自然的美好。你可以给同学介绍一个好去处，说清为什么推荐它。"}, {"grade": "四年级上册", "unit": "第二单元", "theme": "学贵知疑。", "reading": "读书时，试着换不同角度去想，提出你自己的疑问。", "writing": "写一个人，把他最让你难忘的地方清清楚楚写出来。", "raw": "读书时，试着换不同角度去想，提出你自己的疑问。写一个人，把他最让你难忘的地方清清楚楚写出来。"}, {"grade": "四年级上册", "unit": "第三单元", "theme": "处处留心皆学问。", "reading": "读书时，看看作者怎么观察，感受他写得又准又活。", "writing": "你可以连着好多天去观察，记下每天的发现。", "raw": "读书时，看看作者怎么观察，感受他写得又准又活。你可以连着好多天去观察，记下每天的发现。"}, {"grade": "四年级上册", "unit": "第四单元", "theme": "神话", "reading": "读神话时，弄清故事怎么开头、发展、结尾，记住人物模样。", "writing": "张开想象的翅膀，动手编一个属于你的故事。", "raw": "读神话时，弄清故事怎么开头、发展、结尾，记住人物模样。张开想象的翅膀，动手编一个属于你的故事。"}, {"grade": "四年级上册", "unit": "第五单元", "theme": "我手写我心，彩笔绘生活。", "reading": "读书时，看看作者用了什么办法，把一件事讲明白。", "writing": "写一篇自己经历的事，把经过原原本本说清楚。", "raw": "读书时，看看作者用了什么办法，把一件事讲明白。写一篇自己经历的事，把经过原原本本说清楚。"}, {"grade": "四年级上册", "unit": "第六单元", "theme": "童年生活", "reading": "读书时，在旁边写写感受；看人物的动作、说话和表情，体会他的心情。", "writing": "记下你参加的一次活动，把整个过程说得明明白白。", "raw": "读书时，在旁边写写感受；看人物的动作、说话和表情，体会他的心情。记下你参加的一次活动，把整个过程说得明明白白。"}, {"grade": "四年级上册", "unit": "第七单元", "theme": "天下兴亡，匹夫有责。", "reading": "读书时，盯住最关键的人和事，弄清文章到底讲什么。", "writing": "试着给亲人或朋友写一封信，说说心里话。", "raw": "读书时，盯住最关键的人和事，弄清文章到底讲什么。试着给亲人或朋友写一封信，说说心里话。"}, {"grade": "四年级上册", "unit": "第八单元", "theme": "时光如川浪淘沙，青史留名多俊杰。", "reading": "弄清故事怎么发展，记住人物；再把课文简单讲一遍，注意先后和轻重。", "writing": "写一件发生过的事，把你自己心里的感受写出来。", "raw": "弄清故事怎么发展，记住人物；再把课文简单讲一遍，注意先后和轻重。写一件发生过的事，把你自己心里的感受写出来。"}, {"grade": "四年级下册", "unit": "第一单元", "theme": "纯朴的乡村", "reading": "读书时，先圈出那些重要的词句，慢慢懂得作者想说的情感。", "writing": "写写你最喜欢的一处地方，把心里的喜欢说出来。", "raw": "读书时，先圈出那些重要的词句，慢慢懂得作者想说的情感。写写你最喜欢的一处地方，把心里的喜欢说出来。"}, {"grade": "四年级下册", "unit": "第二单元", "theme": "自然的奥秘，科技的精彩。", "reading": "读书时，把读不懂的问题记下来，再动手去弄明白它。", "writing": "张开奇妙的想法，写一件你特别想造出来的新东西。", "raw": "读书时，把读不懂的问题记下来，再动手去弄明白它。张开奇妙的想法，写一件你特别想造出来的新东西。"}, {"grade": "四年级下册", "unit": "第三单元", "theme": "诗歌", "reading": "读现代诗，感受它的味道；再按需要找材料，学着把它们理整齐。", "writing": "和伙伴一起编本小诗集，再开一场诗歌朗读会。", "raw": "读现代诗，感受它的味道；再按需要找材料，学着把它们理整齐。和伙伴一起编本小诗集，再开一场诗歌朗读会。"}, {"grade": "四年级下册", "unit": "第四单元", "theme": "可爱的动物", "reading": "读书时，看看作者用了什么办法，表达对小动物们的爱。", "writing": "写一种你喜欢的动物，试着把它的特别之处写出来。", "raw": "读书时，看看作者用了什么办法，表达对小动物们的爱。写一种你喜欢的动物，试着把它的特别之处写出来。"}, {"grade": "四年级下册", "unit": "第五单元", "theme": "妙笔写美景，巧手著奇观。", "reading": "读书时，看看作者按什么次序，把看到的风景写下来。", "writing": "试着照你游玩的路线，把一路上的风景写清楚。", "raw": "读书时，看看作者按什么次序，把看到的风景写下来。试着照你游玩的路线，把一路上的风景写清楚。"}, {"grade": "四年级下册", "unit": "第六单元", "theme": "成长的故事", "reading": "读长文章时，学着找出关键，弄清它到底讲了什么。", "writing": "照着事情发生的先后，把整个经过说得明明白白。", "raw": "读长文章时，学着找出关键，弄清它到底讲了什么。照着事情发生的先后，把整个经过说得明明白白。"}, {"grade": "四年级下册", "unit": "第七单元", "theme": "伟大的品格，伟大的人……", "reading": "看书里怎么写人的长相和举动，从中体会他的好品格。", "writing": "试着用好几种办法，把一个人的特别之处写出来。", "raw": "看书里怎么写人的长相和举动，从中体会他的好品格。试着用好几种办法，把一个人的特别之处写出来。"}, {"grade": "四年级下册", "unit": "第八单元", "theme": "奇妙的童话", "reading": "读童话时，感受它有多神奇，记住人物善良美好的样子。", "writing": "照你心里的主意，把一个老故事重新编一遍。", "raw": "读童话时，感受它有多神奇，记住人物善良美好的样子。照你心里的主意，把一个老故事重新编一遍。"}, {"grade": "五年级上册", "unit": "第一单元", "theme": "一花一鸟总关情。", "reading": "读书时，看看作者怎样借一件实在的东西，说出心里的情感。", "writing": "写写你对某样东西，自己心里是怎么想的、怎么感受的。", "raw": "读书时，看看作者怎样借一件实在的东西，说出心里的情感。写写你对某样东西，自己心里是怎么想的、怎么感受的。"}, {"grade": "五年级上册", "unit": "第二单元", "theme": "书海撷英须效率。", "reading": "试着练几种好办法，让你读书比别人读得更快。", "writing": "用一件真发生的事，把一个人的特别之处写出来。", "raw": "试着练几种好办法，让你读书比别人读得更快。用一件真发生的事，把一个人的特别之处写出来。"}, {"grade": "五年级上册", "unit": "第三单元", "theme": "民间故事，口耳相传的经典。", "reading": "先弄清故事讲了什么，再添上你的点子，把它讲得不一样。", "writing": "挑出故事里最重要的内容，把它改写得短短的。", "raw": "先弄清故事讲了什么，再添上你的点子，把它讲得不一样。挑出故事里最重要的内容，把它改写得短短的。"}, {"grade": "五年级上册", "unit": "第四单元", "theme": "为什么我的眼里常含泪水？因为我对这片土地爱得深沉……——艾青", "reading": "找来相关材料读一读，再体会作者在文中藏着的情感。", "writing": "先列个简单的单子，再一段一段地把话讲清楚。", "raw": "找来相关材料读一读，再体会作者在文中藏着的情感。先列个简单的单子，再一段一段地把话讲清楚。"}, {"grade": "五年级上册", "unit": "第五单元", "theme": "说明文以“说明白了”为成功。——叶圣陶", "reading": "读那些讲明白知识的短文，看看作者用了哪些说明招数。", "writing": "先找好材料，挑合适的说明办法，把一样东西讲明白。", "raw": "读那些讲明白知识的短文，看看作者用了哪些说明招数。先找好材料，挑合适的说明办法，把一样东西讲明白。"}, {"grade": "五年级上册", "unit": "第六单元", "theme": "舐犊之情，流淌在血液里的爱和温暖。", "reading": "读书时，留意那些场面和细小处，感受里面藏着的爱。", "writing": "选合适的说法，把你的想法和心里话清清楚楚讲出来。", "raw": "读书时，留意那些场面和细小处，感受里面藏着的爱。选合适的说法，把你的想法和心里话清清楚楚讲出来。"}, {"grade": "五年级上册", "unit": "第七单元", "theme": "四时景物皆成趣。", "reading": "看风景时，既感受它安静时的美，也感受它动起来的美。", "writing": "试着写出风景的样子，是怎么一点点变过去的。", "raw": "看风景时，既感受它安静时的美，也感受它动起来的美。试着写出风景的样子，是怎么一点点变过去的。"}, {"grade": "五年级上册", "unit": "第八单元", "theme": "书山有路勤为径。", "reading": "读书时，把零散的内容理一理，抓住文章最重要的几点。", "writing": "想清楚要说什么，分几段写，把最要紧的放在亮处。", "raw": "读书时，把零散的内容理一理，抓住文章最重要的几点。想清楚要说什么，分几段写，把最要紧的放在亮处。"}, {"grade": "五年级下册", "unit": "第一单元", "theme": "童年生活", "reading": "读文章时，细细体会作者在字里行间藏着的情感。", "writing": "写事时，把最要紧的那一段，仔仔细细写得厚实些。", "raw": "读文章时，细细体会作者在字里行间藏着的情感。写事时，把最要紧的那一段，仔仔细细写得厚实些。"}, {"grade": "五年级下册", "unit": "第二单元", "theme": "中国古典名著", "reading": "试着学几招好办法，帮你读懂那些老故事名著。", "writing": "读完一本书，把最打动你的想法写下来给别人看。", "raw": "试着学几招好办法，帮你读懂那些老故事名著。读完一本书，把最打动你的想法写下来给别人看。"}, {"grade": "五年级下册", "unit": "第三单元", "theme": "有趣的汉字", "reading": "感受汉字好玩的地方，认识它的老故事；再学怎么找材料。", "writing": "试着写一份小小的研究报告，说出你发现的结论。", "raw": "感受汉字好玩的地方，认识它的老故事；再学怎么找材料。试着写一份小小的研究报告，说出你发现的结论。"}, {"grade": "五年级下册", "unit": "第四单元", "theme": "爱国主义情怀", "reading": "看书里怎么写人的动作、说话和表情，体会他心里在想啥。", "writing": "试着写写人物的动作、说话和表情，露出他心里的想法。", "raw": "看书里怎么写人的动作、说话和表情，体会他心里在想啥。试着写写人物的动作、说话和表情，露出他心里的想法。"}, {"grade": "五年级下册", "unit": "第五单元", "theme": "字里行间众生相，大千世界你我他。", "reading": "试着学几招常用的办法，把一个人写得活灵活现。", "writing": "用刚学的写人招数，把一个人的特别之处写得实在些。", "raw": "试着学几招常用的办法，把一个人写得活灵活现。用刚学的写人招数，把一个人的特别之处写得实在些。"}, {"grade": "五年级下册", "unit": "第六单元", "theme": "思维的火花跨越时空，照亮昨天、今天、明天。", "reading": "把故事的开头、推进、最高潮和结尾排好，看清人物怎么想。", "writing": "照着给出的场面编故事，别忘了让情节来个转弯。", "raw": "把故事的开头、推进、最高潮和结尾排好，看清人物怎么想。照着给出的场面编故事，别忘了让情节来个转弯。"}, {"grade": "五年级下册", "unit": "第七单元", "theme": "足下万里，移步换景，寰宇纷呈万花筒。", "reading": "看风景时，既感受它静下来的美，也感受它动起来的美。", "writing": "先找些材料，再向大家讲讲你眼里的一处好地方。", "raw": "看风景时，既感受它静下来的美，也感受它动起来的美。先找些材料，再向大家讲讲你眼里的一处好地方。"}, {"grade": "五年级下册", "unit": "第八单元", "theme": "幽默给我们带来笑声，也给我们带来思考……", "reading": "读文章时，品味那些逗趣的对话和俏皮好玩的说法。", "writing": "看一幅漫画，把你自己心里的主意清清楚楚写出来。", "raw": "读文章时，品味那些逗趣的对话和俏皮好玩的说法。看一幅漫画，把你自己心里的主意清清楚楚写出来。"}, {"grade": "六年级上册", "unit": "第一单元", "theme": "背起行装出发吧，去触摸山川湖海的心跳", "reading": "读课文时，体会那些奇妙的想象，把内容真正读进心里。", "writing": "动笔时张开想象，把最要紧的那段多写几笔。", "raw": "读课文时，体会那些奇妙的想象，把内容真正读进心里。动笔时张开想象，把最要紧的那段多写几笔。"}, {"grade": "六年级上册", "unit": "第二单元", "theme": "重温革命岁月，把历史的声音留在心里", "reading": "读书时，看作者怎么把整体和细节合在一起写热闹。", "writing": "试着用整体加细节的办法，记下你参加的一次活动。", "raw": "读书时，看作者怎么把整体和细节合在一起写热闹。试着用整体加细节的办法，记下你参加的一次活动。"}, {"grade": "六年级上册", "unit": "第三单元", "theme": "读书好比串门", "reading": "看你读书为了啥，就挑最合适的办法去读它。", "writing": "写失落的事时，把心里的难过揉进去，说出你的想法。", "raw": "看你读书为了啥，就挑最合适的办法去读它。写失落的事时，把心里的难过揉进去，说出你的想法。"}, {"grade": "六年级上册", "unit": "第四单元", "theme": "小说大多是虚构的，却又有生活的影子", "reading": "读小说时，留意故事发展和周围景象，记住人的模样。", "writing": "张开想象的翅膀，编一个发生在身边的真实小故事。", "raw": "读小说时，留意故事发展和周围景象，记住人的模样。张开想象的翅膀，编一个发生在身边的真实小故事。"}, {"grade": "六年级上册", "unit": "第五单元", "theme": "以立意为宗，不能以人为本", "reading": "读书时，看看作者怎么围绕一个核心想法往下写。", "writing": "从好几个角度挑例子，把你想说的核心想法讲明白。", "raw": "读书时，看看作者怎么围绕一个核心想法往下写。从好几个角度挑例子，把你想说的核心想法讲明白。"}, {"grade": "六年级上册", "unit": "第六单元", "theme": "我们是大地的一部分，大地也是我们的一部分", "reading": "读书时，先圈出最重要的句子，弄清作者最想说的理。", "writing": "试着写一封倡议信，呼吁大家来做这件好事。", "raw": "读书时，先圈出最重要的句子，弄清作者最想说的理。试着写一封倡议信，呼吁大家来做这件好事。"}, {"grade": "六年级上册", "unit": "第七单元", "theme": "一首歌，一幅画，一件手工作品……一段美好的", "reading": "读着文字，让脑海浮出画面，感受艺术带来的美好。", "writing": "写写你最拿手的一招，把心里的感受和想法亮出来。", "raw": "读着文字，让脑海浮出画面，感受艺术带来的美好。写写你最拿手的一招，把心里的感受和想法亮出来。"}, {"grade": "六年级上册", "unit": "第八单元", "theme": "有的人活着，他已经死，有的人死了，他还活着。", "reading": "找来相关的材料读读，帮你弄懂文章到底讲了啥。", "writing": "借一件发生过的事写一个人，说出你心里的情感。", "raw": "找来相关的材料读读，帮你弄懂文章到底讲了啥。借一件发生过的事写一个人，说出你心里的情感。"}, {"grade": "六年级下册", "unit": "第一单元", "theme": "百里不同风，千里不同俗", "reading": "读书时，分清哪段重要哪段轻，看作者的重点怎么写厚。", "writing": "动笔时盯住最要紧处，把东西的特别之处写出来。", "raw": "读书时，分清哪段重要哪段轻，看作者的重点怎么写厚。动笔时盯住最要紧处，把东西的特别之处写出来。"}, {"grade": "六年级下册", "unit": "第二单元", "theme": "跟谁外国文学名著的脚步，去发现更广阔的世界", "reading": "弄清书的大意和名著讲了啥，再聊聊难忘的人和事。", "writing": "试着把一本书的内容，缩成短短的一段大意。", "raw": "弄清书的大意和名著讲了啥，再聊聊难忘的人和事。试着把一本书的内容，缩成短短的一段大意。"}, {"grade": "六年级下册", "unit": "第三单元", "theme": "让真情在笔尖流露", "reading": "读文章时，看看作者用了什么办法，把情感说出来。", "writing": "动笔时挑真切的内容，把心里真实的情感写出来。", "raw": "读文章时，看看作者用了什么办法，把情感说出来。动笔时挑真切的内容，把心里真实的情感写出来。"}, {"grade": "六年级下册", "unit": "第四单元", "theme": "人生自古谁无死，留取丹青照汗青", "reading": "读书时，看人的神气和举动，体会好品格；再找材料加深懂。", "writing": "动笔时，挑一种最合适的方式，把心里话讲出来。", "raw": "读书时，看人的神气和举动，体会好品格；再找材料加深懂。动笔时，挑一种最合适的方式，把心里话讲出来。"}, {"grade": "六年级下册", "unit": "第五单元", "theme": "科学发现的机遇，总是等着好奇而又爱思考的人", "reading": "读书时，看作者怎么用真实的小事，把一个道理讲明白。", "writing": "张开想象的翅膀，写一个关于未来世界的小故事。", "raw": "读书时，看作者怎么用真实的小事，把一个道理讲明白。张开想象的翅膀，写一个关于未来世界的小故事。"}, {"grade": "六年级下册", "unit": "第六单元", "theme": "那些种在校园里长不大的记忆，那些留在岁月中忘不掉的纯真", "reading": "试着学几招好办法，把零散的材料理得整整齐齐。", "writing": "设计一个小小的校园活动，再写一份计划给大家看。", "raw": "试着学几招好办法，把零散的材料理得整整齐齐。设计一个小小的校园活动，再写一份计划给大家看。"}];
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.1.1';
 const LS_KEY = 'reading_base_v1';
 let state = load() || {notes:{}, stars:{}};
 let cur = {grade:null, term:null, unitIdx:null};
@@ -281,6 +313,7 @@ function renderUnits(){
 }
 function renderDetail(){
   const d=unitsOf(cur.grade,cur.term)[cur.unitIdx];
+  document.getElementById('guideCard').textContent='📖 课本指引：翻开《语文》（'+d.grade+'）'+d.unit+'，跟着课文读一读、想一想吧。';
   document.getElementById('dTag').textContent=classifyTag(d.reading);
   document.getElementById('dTheme').textContent=d.theme;
   document.getElementById('dReading').textContent=d.reading;
@@ -401,7 +434,77 @@ window.addEventListener('beforeunload', ()=>{
     if(d){ state.notes[uid(d)]=document.getElementById('dNote').value; save(); }
   }
 });
+// ===== 未成年人保护首启告知 (FEATURE 1) =====
+function todayStr(){
+  const d=new Date();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const day=String(d.getDate()).padStart(2,'0');
+  return d.getFullYear()+'-'+m+'-'+day;
+}
+function initAgreement(){
+  const overlay=document.getElementById('agreeOverlay');
+  const btn=document.getElementById('agreeBtn');
+  let agreed=false;
+  try{ agreed=localStorage.getItem('yljs_agreed')==='1'; }catch(e){}
+  if(agreed){ overlay.style.display='none'; return; }
+  overlay.style.display='flex';
+  btn.focus();
+  function agree(){
+    try{ localStorage.setItem('yljs_agreed','1'); }catch(e){}
+    overlay.style.display='none';
+    document.removeEventListener('keydown', onKey);
+  }
+  function onKey(e){
+    if(e.key==='Escape'||e.key==='Enter'){ e.preventDefault(); agree(); }
+  }
+  btn.addEventListener('click', agree);
+  document.addEventListener('keydown', onKey);
+}
+
+// ===== 单次/单日时长温柔提醒 (FEATURE 2) =====
+const USAGE={ sessionStart:0, lastTick:0, dailyDate:'', session20Shown:false, daily40Shown:false, timer:null };
+function readDaily(){
+  try{
+    const raw=localStorage.getItem('yljs_daily');
+    if(!raw) return {date:todayStr(), mins:0};
+    const o=JSON.parse(raw);
+    if(!o||typeof o!=='object'||o.date!==todayStr()||typeof o.mins!=='number'||!isFinite(o.mins)||o.mins<0){
+      return {date:todayStr(), mins:0};
+    }
+    return {date:o.date, mins:o.mins};
+  }catch(e){ return {date:todayStr(), mins:0}; }
+}
+function usageTick(){
+  const now=Date.now();
+  const today=todayStr();
+  if(today!==USAGE.dailyDate){ USAGE.dailyDate=today; USAGE.daily40Shown=false; }
+  if(!USAGE.session20Shown && Math.floor((now-USAGE.sessionStart)/60000)>=20){
+    toast('你已读了 20 分钟啦，起来活动一下、看看远处吧～');
+    USAGE.session20Shown=true;
+  }
+  const elapsedMin=Math.floor((now-USAGE.lastTick)/60000);
+  USAGE.lastTick=now;
+  if(elapsedMin>0){
+    const daily=readDaily();
+    daily.mins=(daily.mins||0)+elapsedMin;
+    if(daily.mins<0) daily.mins=0;
+    try{ localStorage.setItem('yljs_daily', JSON.stringify(daily)); }catch(e){}
+    if(!USAGE.daily40Shown && daily.mins>=40){
+      toast('今天已经读了 40 分钟，明天再继续吧，保护好眼睛～');
+      USAGE.daily40Shown=true;
+    }
+  }
+}
+function initUsage(){
+  USAGE.sessionStart=Date.now();
+  USAGE.lastTick=Date.now();
+  USAGE.dailyDate=todayStr();
+  USAGE.timer=setInterval(usageTick, 30000);
+}
+
 renderHome();
+initAgreement();
+initUsage();
 </script>
 </body>
 </html>

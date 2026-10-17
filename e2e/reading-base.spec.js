@@ -36,6 +36,8 @@ test.beforeAll(() => {
 });
 
 test.beforeEach(async ({ page }) => {
+  // 注入「已同意」标记，避免首启告知覆盖层拦截既有回归用例的点击
+  await page.addInitScript(() => { try { localStorage.setItem('yljs_agreed', '1'); } catch (e) {} });
   await page.goto(FILE);
   await page.evaluate((k) => localStorage.removeItem(k), LS_KEY);
   await page.reload();
@@ -234,4 +236,19 @@ test('R7-RES-2 配额正常-成功点亮并持久化（回归）', async ({ page
   // localStorage 已写入该单元 stars 键
   const after = await page.evaluate((k) => JSON.parse(localStorage.getItem(k)), LS_KEY);
   expect(after.stars['三年级上册|第一单元']).toBe(true);
+});
+
+// ---------- 合规-首启告知（P0 未成年人保护）----------
+test('合规-首启告知出现并可关闭', async ({ context }) => {
+  // 全新页面（不注入 yljs_agreed），模拟首次打开
+  const p = await context.newPage();
+  await p.goto(FILE);
+  await expect(p.locator('#agreeOverlay')).toBeVisible();
+  await p.getByRole('button', { name: /我明白了，开始阅读/ }).click();
+  await expect(p.locator('#agreeOverlay')).toBeHidden();
+  expect(await p.evaluate(() => localStorage.getItem('yljs_agreed'))).toBe('1');
+  // 刷新后不再出现
+  await p.reload();
+  await expect(p.locator('#agreeOverlay')).toBeHidden();
+  await p.close();
 });
