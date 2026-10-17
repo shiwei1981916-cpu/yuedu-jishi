@@ -1,0 +1,30 @@
+<testsuites id="" name="" tests="13" failures="0" skipped="0" errors="0" time="6.037453">
+<testsuite name="reading-base.spec.js" timestamp="2026-10-16T17:49:27.200Z" hostname="" tests="13" failures="0" skipped="0" time="5.242" errors="0">
+<testcase name="R2-1 导出-剪贴板兜底" classname="reading-base.spec.js" time="0.299">
+</testcase>
+<testcase name="R2-2 导出-系统分享" classname="reading-base.spec.js" time="0.112">
+</testcase>
+<testcase name="R2-3 导出-下载路径不报错" classname="reading-base.spec.js" time="0.106">
+</testcase>
+<testcase name="R3-1 导入-拒绝不改写" classname="reading-base.spec.js" time="0.527">
+</testcase>
+<testcase name="R3-2 导入-确认后覆盖" classname="reading-base.spec.js" time="0.535">
+</testcase>
+<testcase name="R4-1 笔记-防抖自动保存" classname="reading-base.spec.js" time="1.096">
+</testcase>
+<testcase name="R4-2 笔记-blur 立即落盘" classname="reading-base.spec.js" time="0.339">
+</testcase>
+<testcase name="R6-1 导入-畸形被拒且原数据不被污染" classname="reading-base.spec.js" time="0.427">
+</testcase>
+<testcase name="R6-2 导入-合法备份成功" classname="reading-base.spec.js" time="0.432">
+</testcase>
+<testcase name="R7 配额异常-不崩溃且写入失败被捕获" classname="reading-base.spec.js" time="0.434">
+</testcase>
+<testcase name="R8 可访问性-视口/字号/对比度" classname="reading-base.spec.js" time="0.088">
+</testcase>
+<testcase name="R7-RES-1 配额异常-错误提示且不假成功" classname="reading-base.spec.js" time="0.414">
+</testcase>
+<testcase name="R7-RES-2 配额正常-成功点亮并持久化（回归）" classname="reading-base.spec.js" time="0.433">
+</testcase>
+</testsuite>
+</testsuites>
