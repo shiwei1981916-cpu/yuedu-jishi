@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小读者的阅读基石</title>
+<style>
+  :root{
+    --ink:#3a4a52; --ink-soft:#5a6b72;
+    --teal:#34b3a0; --teal-soft:#a7e3d8;
+    --sun:#f4c430; --peach:#ff9aa2; --sky:#6ec6e8;
+    --paper:#fffcf7; --card:#ffffff;
+    --line:#efe7da; --shadow:0 8px 24px rgba(58,74,82,.09);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.75;max-width:680px;margin:0 auto;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
+  .wrap{padding:20px 18px 44px}
+  .topbar{display:flex;align-items:center;justify-content:space-between}
+  .back{background:none;border:none;color:var(--teal);font-size:15px;cursor:pointer;padding:6px 0;font-weight:600}
+  .brand{font-size:12px;color:var(--ink-soft);letter-spacing:2px}
+  h1{font-size:25px;font-weight:700;margin:6px 0 2px;letter-spacing:1px}
+  .sub{color:var(--ink-soft);font-size:14px;margin-bottom:8px}
+  .mascot-talk{display:flex;gap:12px;align-items:center;background:#f3fbf9;border:1px solid var(--teal-soft);
+    border-radius:18px;padding:12px 14px;margin:14px 0 22px}
+  .mascot-talk svg{flex:0 0 56px}
+  .mascot-talk .mt{font-size:14px}
+  .mascot-talk .mt b{color:var(--teal)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px 16px;
+    cursor:pointer;box-shadow:var(--shadow);transition:transform .15s ease;position:relative;overflow:hidden}
+  .tile:active{transform:scale(.96)}
+  .tile .big{font-size:21px;font-weight:700}
+  .tile .sm{font-size:14px;color:var(--ink-soft);margin-top:4px}
+  .tile .deco{position:absolute;right:-8px;bottom:-10px;opacity:.22;font-size:46px}
+  .sectitle{font-size:15px;color:var(--ink-soft);margin:26px 0 12px;letter-spacing:1px}
+  .ucard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;
+    margin-bottom:12px;cursor:pointer;box-shadow:var(--shadow);display:flex;gap:12px;align-items:flex-start;
+    transition:transform .15s ease}
+  .ucard:active{transform:scale(.985)}
+  .uicon{flex:0 0 44px;height:44px;border-radius:14px;background:#f3fbf9;display:flex;
+    align-items:center;justify-content:center;font-size:24px;border:1px solid var(--teal-soft)}
+  .unum{position:absolute}
+  .uctx{margin-left:4px}
+  .uctx h3{margin:0 0 3px;font-size:16px;font-weight:700}
+  .utheme{font-size:14px;color:var(--ink-soft);margin-bottom:7px}
+  .uread{font-size:14px;color:var(--ink)}
+  .tag{display:inline-block;font-size:11px;color:var(--teal);border:1px solid var(--teal-soft);
+    border-radius:999px;padding:1px 9px;margin-top:8px;background:#f3fbf9}
+  .star{color:var(--sun)}
+  .detail .dtag{margin:0 0 12px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;
+    box-shadow:var(--shadow);margin-bottom:14px}
+  .lab{font-size:13px;color:var(--ink-soft);letter-spacing:1px;margin-bottom:8px}
+  .reading-big{font-size:19px;font-weight:600;line-height:1.6}
+  .writing-big{font-size:15px;color:var(--ink-soft);line-height:1.6}
+  textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px;
+    font-family:inherit;font-size:14px;color:var(--ink);background:#fffdf9;resize:vertical;min-height:84px;outline:none}
+  textarea:focus{border-color:var(--teal-soft)}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:var(--teal);color:#fff;border:none;
+    border-radius:999px;padding:11px 20px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .12s}
+  .btn.ghost{background:#fff;color:var(--teal);border:1px solid var(--teal-soft)}
+  .btn:active{transform:scale(.95)}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  .grow-hero{text-align:center;margin:6px 0 4px}
+  .grow-hero h1{font-size:22px}
+  .stat{display:flex;justify-content:space-around;margin:16px 0}
+  .stat .b{font-size:26px;font-weight:700;color:var(--teal)}
+  .stat .c{font-size:13px;color:var(--ink-soft);margin-top:2px}
+  .badge{display:inline-block;background:#fff7e6;color:#d99a1e;border:1px solid #f3dca6;
+    border-radius:999px;padding:4px 12px;font-size:13px;margin:4px;font-weight:600}
+  .empty{color:var(--ink-soft);font-size:14px;text-align:center;padding:24px 10px}
+  .hidden{display:none}
+  .footnote{font-size:11.5px;color:var(--ink-soft);text-align:center;margin-top:28px;line-height:1.6}
+  .toast{position:fixed;left:50%;bottom:46px;transform:translateX(-50%);background:var(--ink);
+    color:#fff;padding:11px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:20}
+  .toast.show{opacity:.96}
+  /* 星星点亮动画 */
+  @keyframes pop{0%{transform:scale(.4) rotate(-20deg);opacity:0}60%{transform:scale(1.25) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+  .star-pop{animation:pop .5s ease both}
+  .encourage{background:#fff7e6;border:1px solid #f3dca6;border-radius:16px;padding:10px 14px;
+    font-size:13.5px;color:#b9821a;margin-top:12px;display:flex;gap:8px;align-items:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="back hidden" id="backBtn" onclick="goBack()">‹ 返回</button>
+    <span class="brand" id="brand">阅读基石</span>
+  </div>
+
+  <section id="home">
+    <h1>小读者的阅读基石</h1>
+    <div class="sub">把阅读本领，一颗颗点亮 🌱</div>
+    <div class="mascot-talk">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <path d="M28 50c0-13 7-22 19-26-3 13-9 22-19 26Z" fill="#a7e3d8"/>
+        <path d="M28 50c0-11-6-18-16-21 3 11 9 18 16 21Z" fill="#34b3a0"/>
+        <rect x="26" y="46" width="4" height="9" rx="2" fill="#7d8b90"/>
+        <circle cx="24" cy="20" r="2.2" fill="#3a4a52"/><circle cx="32" cy="20" r="2.2" fill="#3a4a52"/>
+        <path d="M24 25q4 4 8 0" stroke="#3a4a52" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div class="mt">嗨，我是 <b>芽芽</b>！我们一起，把语文书里的阅读本领，一颗颗点亮吧～</div>
+    </div>
+    <div class="sectitle">你上几年级呀？</div>
+    <div class="grid" id="gradeGrid"></div>
+    <div class="row" style="margin-top:22px">
+      <button class="btn ghost" onclick="showGrowth()">🌳 我的成长树</button>
+      <button class="btn ghost" onclick="exportData()">导出备份</button>
+    </div>
+  </section>
+
+  <section id="terms" class="hidden">
+    <div class="sectitle" id="termsTitle">选择册次</div>
+    <div class="grid" id="termGrid"></div>
+  </section>
+
+  <section id="units" class="hidden">
+    <div class="sectitle" id="unitsTitle">单元阅读本领</div>
+    <div id="unitList"></div>
+  </section>
+
+  <section id="detail" class="hidden">
+    <div class="detail">
+      <div class="dtag"><span class="tag" id="dTag"></span></div>
+      <div class="panel">
+        <div class="lab">这一单元 · 主题</div>
+        <div class="reading-big" id="dTheme"></div>
+      </div>
+      <div class="panel">
+        <div class="lab">📖 要练的阅读本领</div>
+        <div class="reading-big" id="dReading"></div>
+      </div>
+      <div class="panel">
+        <div class="lab">✏️ 这一单元的写作练习</div>
+        <div class="writing-big" id="dWriting"></div>
+      </div>
+      <div class="panel">
+        <div class="lab">🌟 我的阅读小记</div>
+        <textarea id="dNote" placeholder="读完一本书，把你的小发现写在这里吧～"></textarea>
+        <div class="row">
+          <button class="btn" id="starBtn" onclick="toggleStar()">点亮小星星</button>
+          <span id="starState" class="star" style="font-size:18px"></span>
+        </div>
+        <div class="encourage" id="encBox" style="display:none"></div>
+      </div>
+      <button class="btn ghost" style="width:100%;justify-content:center" onclick="saveNote()">保存小记</button>
+    </div>
+  </section>
+
+  <section id="growth" class="hidden">
+    <div class="grow-hero">
+      <svg id="treeSvg" width="150" height="160" viewBox="0 0 150 160" fill="none"></svg>
+      <h1>我的成长树</h1>
+    </div>
+    <div class="stat">
+      <div><div class="b" id="gStar">0</div><div class="c">点亮的星</div></div>
+      <div><div class="b" id="gNote">0</div><div class="c">写了小记</div></div>
+      <div><div class="b" id="gPct">0%</div><div class="c">完成度</div></div>
+    </div>
+    <div class="sectitle">已获得的徽章</div>
+    <div id="badgeBox"><span class="empty">还没有徽章，去点亮第一颗星吧 🌟</span></div>
+    <div class="row" style="margin-top:20px">
+      <button class="btn ghost" style="flex:1;justify-content:center" onclick="exportData()">导出备份</button>
+      <button class="btn ghost" style="flex:1;justify-content:center" onclick="importData()">导入备份</button>
+    </div>
+    <input type="file" id="impFile" accept="application/json" class="hidden" onchange="doImport(event)">
+  </section>
+
+  <div class="footnote">数据只保存在本机浏览器，不会上传哦。<br>内容来源：统编版语文 3–6 年级《语文要素梳理》</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = [{"grade": "三年级上册", "unit": "第一单元", "theme": "美丽的校园，成长的摇篮，梦想启航的地方。", "reading": "阅读时，关注有新鲜感的词语和句子。", "writing": "体会习作的乐趣。", "raw": "阅读时，关注有新鲜感的词语和句子。体会习作的乐趣。"}, {"grade": "三年级上册", "unit": "第二单元", "theme": "金秋的阳光", "reading": "运用多种方法理解难懂的词语。", "writing": "学习写日记。", "raw": "运用多种方法理解难懂的词语。学习写日记。"}, {"grade": "三年级上册", "unit": "第三单元", "theme": "游历奇妙的童话王国。", "reading": "感受童话丰富的想象。", "writing": "试着自己编童话，写童话。", "raw": "感受童话丰富的想象。试着自己编童话，写童话。"}, {"grade": "三年级上册", "unit": "第四单元", "theme": "猜测与推想，是我们的阅读之旅充满了乐趣。", "reading": "一边读一边预测，顺着故事情节去猜想。。学习预测的一些基本方法。", "writing": "尝试续编故事。", "raw": "一边读一边预测，顺着故事情节去猜想。学习预测的一些基本方法。尝试续编故事。"}, {"grade": "三年级上册", "unit": "第五单元", "theme": "生活中不缺少美，只是缺少发现美的眼睛。——罗丹", "reading": "体会作者是怎样留心观察周围事物的。", "writing": "仔细观察，把观察所得写下来。", "raw": "体会作者是怎样留心观察周围事物的。仔细观察，把观察所得写下来。"}, {"grade": "三年级上册", "unit": "第六单元", "theme": "祖国，我爱你。", "reading": "借助关键语句理解一段话的意思。", "writing": "习作的时候，试着围绕一个意思写。", "raw": "借助关键语句理解一段话的意思。习作的时候，试着围绕一个意思写。"}, {"grade": "三年级上册", "unit": "第七单元", "theme": "大自然赐给我们许多珍贵的礼物。", "reading": "感受课文生动的语言，积累喜欢的语句。", "writing": "留心生活，把自己的想法记录下来。", "raw": "感受课文生动的语言，积累喜欢的语句。留心生活，把自己的想法记录下来。"}, {"grade": "三年级上册", "unit": "第八单元", "theme": "美好的品质。", "reading": "学习带着问题默读，理解课文的意思。", "writing": "学写一件简单的事。", "raw": "学习带着问题默读，理解课文的意思。学写一件简单的事。"}, {"grade": "三年级下册", "unit": "第一单元", "theme": "大自然中，处处有可爱的生灵。", "reading": "试着一边读一边想象画面。。体会优美生动的语句。", "writing": "试着把观察到的事物写清楚。", "raw": "试着一边读一边想象画面。体会优美生动的语句。试着把观察到的事物写清楚。"}, {"grade": "三年级下册", "unit": "第二单元", "theme": "寓言是生活的一面镜子。", "reading": "读寓言故事，明白其中的道理。", "writing": "把图画的内容写清楚。", "raw": "读寓言故事，明白其中的道理。把图画的内容写清楚。"}, {"grade": "三年级下册", "unit": "第三单元", "theme": "深厚的传统文化，中国人的根。", "reading": "了解课文是怎么围绕一个意思把一段话写清楚的。", "writing": "收集传统节日的资料，交流节日的风俗习惯，写一写过节的过程。", "raw": "了解课文是怎么围绕一个意思把一段话写清楚的。收集传统节日的资料，交流节日的风俗习惯，写一写过节的过程。"}, {"grade": "三年级下册", "unit": "第四单元", "theme": "自然如此奇妙，留心观察，会有新的发现。", "reading": "借助关键语句概括一段话的大意。", "writing": "观察事物的变化，把实验过程写清楚。", "raw": "借助关键语句概括一段话的大意。观察事物的变化，把实验过程写清楚。"}, {"grade": "三年级下册", "unit": "第五单元", "theme": "想象力比知识更重要。——爱因斯坦", "reading": "走进想象的世界，感受想象的神奇。", "writing": "发挥想象写故事，创造自己的想象世界。", "raw": "走进想象的世界，感受想象的神奇。发挥想象写故事，创造自己的想象世界。"}, {"grade": "三年级下册", "unit": "第六单元", "theme": "在童年的百花园里，我看到了真善美。", "reading": "运用多种方法理解难懂的句子。", "writing": "写一个身边的人，尝试写出他的特点。", "raw": "运用多种方法理解难懂的句子。写一个身边的人，尝试写出他的特点。"}, {"grade": "三年级下册", "unit": "第七单元", "theme": "天地间隐藏着无穷无尽的奥秘，等待我们去寻找。", "reading": "了解课文是从哪几个方面把事物写清楚的。", "writing": "初步学习整合信息，介绍一种事物。", "raw": "了解课文是从哪几个方面把事物写清楚的。初步学习整合信息，介绍一种事物。"}, {"grade": "三年级下册", "unit": "第八单元", "theme": "有趣的故事，留下的不仅是开心的笑声，还有更多的思考。", "reading": "了解故事的主要内容，复述故事。", "writing": "根据提示，展开想象，尝试编童话故事。", "raw": "了解故事的主要内容，复述故事。根据提示，展开想象，尝试编童话故事。"}, {"grade": "四年级上册", "unit": "第一单元", "theme": "江流天地外，山色有无中。——王维", "reading": "边读边想象画面，感受自然之美。", "writing": "向同学推荐一个好地方，写清楚推荐理由。", "raw": "边读边想象画面，感受自然之美。向同学推荐一个好地方，写清楚推荐理由。"}, {"grade": "四年级上册", "unit": "第二单元", "theme": "学贵知疑。", "reading": "阅读时尝试从不同角度去思考，提出自己的问题。", "writing": "写一个人，注意把印象最深的地方写出来。", "raw": "阅读时尝试从不同角度去思考，提出自己的问题。写一个人，注意把印象最深的地方写出来。"}, {"grade": "四年级上册", "unit": "第三单元", "theme": "处处留心皆学问。", "reading": "了解观察的方法，体会文章准确生动的表达。", "writing": "进行连续观察，学些观察日记。", "raw": "了解观察的方法，体会文章准确生动的表达。进行连续观察，学些观察日记。"}, {"grade": "四年级上册", "unit": "第四单元", "theme": "神话", "reading": "了解故事的起因、经过、结果。。感受神话中的人物形象。", "writing": "展开想象，写一个故事。", "raw": "了解故事的起因、经过、结果。感受神话中的人物形象。展开想象，写一个故事。"}, {"grade": "四年级上册", "unit": "第五单元", "theme": "我手写我心，彩笔绘生活。", "reading": "了解作者是怎样把事情写清楚的。", "writing": "写一件事，把事情写清楚。", "raw": "了解作者是怎样把事情写清楚的。写一件事，把事情写清楚。"}, {"grade": "四年级上册", "unit": "第六单元", "theme": "童年生活", "reading": "学习用批注的方法阅读。。通过人物的动作、语言、神态体会人物的感情。", "writing": "记一次活动，把活动过程写清楚。", "raw": "学习用批注的方法阅读。通过人物的动作、语言、神态体会人物的感情。记一次活动，把活动过程写清楚。"}, {"grade": "四年级上册", "unit": "第七单元", "theme": "天下兴亡，匹夫有责。", "reading": "关注主要人物和事件，学习把握文章的主要内容。", "writing": "学习写书信。", "raw": "关注主要人物和事件，学习把握文章的主要内容。学习写书信。"}, {"grade": "四年级上册", "unit": "第八单元", "theme": "时光如川浪淘沙，青史留名多俊杰。", "reading": "了解故事情节，感受人物形象。。简要复述课文，注意顺序和详略。", "writing": "写一件事，能写出自己的感受。", "raw": "了解故事情节，感受人物形象。简要复述课文，注意顺序和详略。写一件事，能写出自己的感受。"}, {"grade": "四年级下册", "unit": "第一单元", "theme": "纯朴的乡村", "reading": "抓住关键词句，初步体会课文表达的思想感情。", "writing": "写自己喜爱的某个地方，表达出自己的感受。", "raw": "抓住关键词句，初步体会课文表达的思想感情。写自己喜爱的某个地方，表达出自己的感受。"}, {"grade": "四年级下册", "unit": "第二单元", "theme": "自然的奥秘，科技的精彩。", "reading": "阅读时能提出不懂的问题，并试着解决。", "writing": "展开奇思妙想，写一写自己想发明的东西。", "raw": "阅读时能提出不懂的问题，并试着解决。展开奇思妙想，写一写自己想发明的东西。"}, {"grade": "四年级下册", "unit": "第三单元", "theme": "诗歌", "reading": "初步了解现代诗的一些特点，体会诗歌的情感。。根据需要收集资料，初步学习整理资料的方法。", "writing": "合作编小诗集，举办诗歌朗诵会。", "raw": "初步了解现代诗的一些特点，体会诗歌的情感。根据需要收集资料，初步学习整理资料的方法。合作编小诗集，举办诗歌朗诵会。"}, {"grade": "四年级下册", "unit": "第四单元", "theme": "可爱的动物", "reading": "体会作家是如何表达对动物的喜爱之情的。", "writing": "写自己喜欢的动物，试着写出特点。", "raw": "体会作家是如何表达对动物的喜爱之情的。写自己喜欢的动物，试着写出特点。"}, {"grade": "四年级下册", "unit": "第五单元", "theme": "妙笔写美景，巧手著奇观。", "reading": "了解课文按一定顺序写景物的方法。", "writing": "学习按游览的顺序写景物。", "raw": "了解课文按一定顺序写景物的方法。学习按游览的顺序写景物。"}, {"grade": "四年级下册", "unit": "第六单元", "theme": "成长的故事", "reading": "学习怎样把握长文章的主要内容。", "writing": "按一定顺序把事情的过程写清楚。", "raw": "学习怎样把握长文章的主要内容。按一定顺序把事情的过程写清楚。"}, {"grade": "四年级下册", "unit": "第七单元", "theme": "伟大的品格，伟大的人……", "reading": "从人物的外貌、行为等描写中感受人物的品质。", "writing": "学习用多种方法写出人物的特点。", "raw": "从人物的外貌、行为等描写中感受人物的品质。学习用多种方法写出人物的特点。"}, {"grade": "四年级下册", "unit": "第八单元", "theme": "奇妙的童话", "reading": "感受童话的奇妙，体会人物真善美的形象。", "writing": "按自己的想法新编故事。", "raw": "感受童话的奇妙，体会人物真善美的形象。按自己的想法新编故事。"}, {"grade": "五年级上册", "unit": "第一单元", "theme": "一花一鸟总关情。", "reading": "初步了解课文借助具体事物抒发感情的方法。", "writing": "写出自己对一种事物的感受。", "raw": "初步了解课文借助具体事物抒发感情的方法。写出自己对一种事物的感受。"}, {"grade": "五年级上册", "unit": "第二单元", "theme": "书海撷英须效率。", "reading": "学习提高阅读速度的方法。", "writing": "结合具体事例写出人物的特点。", "raw": "学习提高阅读速度的方法。结合具体事例写出人物的特点。"}, {"grade": "五年级上册", "unit": "第三单元", "theme": "民间故事，口耳相传的经典。", "reading": "了解课文内容，创造性地复述故事。", "writing": "提取主要信息，缩写故事。", "raw": "了解课文内容，创造性地复述故事。提取主要信息，缩写故事。"}, {"grade": "五年级上册", "unit": "第四单元", "theme": "为什么我的眼里常含泪水？因为我对这片土地爱得深沉……——艾青", "reading": "结合查找的资料，体会课文表达的思想感情。", "writing": "学习列提纲，分段叙述。", "raw": "结合查找的资料，体会课文表达的思想感情。学习列提纲，分段叙述。"}, {"grade": "五年级上册", "unit": "第五单元", "theme": "说明文以“说明白了”为成功。——叶圣陶", "reading": "阅读简单的说明性文章，了解基本的说明方法。", "writing": "搜集资料，用恰当的说明方法，把某一种事物介绍清楚。", "raw": "阅读简单的说明性文章，了解基本的说明方法。搜集资料，用恰当的说明方法，把某一种事物介绍清楚。"}, {"grade": "五年级上册", "unit": "第六单元", "theme": "舐犊之情，流淌在血液里的爱和温暖。", "reading": "注意体会场景和细节描写中蕴含的感情。", "writing": "用恰当的语言表达自己的看法和感受。", "raw": "注意体会场景和细节描写中蕴含的感情。用恰当的语言表达自己的看法和感受。"}, {"grade": "五年级上册", "unit": "第七单元", "theme": "四时景物皆成趣。", "reading": "初步体会景物的静态美和动态美。", "writing": "学习描写景物的变化。", "raw": "初步体会景物的静态美和动态美。学习描写景物的变化。"}, {"grade": "五年级上册", "unit": "第八单元", "theme": "书山有路勤为径。", "reading": "阅读时注意梳理信息，把握内容要点。", "writing": "根据表达的需要，分段表述，突出重点。", "raw": "阅读时注意梳理信息，把握内容要点。根据表达的需要，分段表述，突出重点。"}, {"grade": "五年级下册", "unit": "第一单元", "theme": "童年生活", "reading": "体会课文表达的思想情感。", "writing": "把一件事的重点部分写具体。", "raw": "体会课文表达的思想情感。把一件事的重点部分写具体。"}, {"grade": "五年级下册", "unit": "第二单元", "theme": "中国古典名著", "reading": "初步学习阅读古典名著的方法。", "writing": "学习写读后感。", "raw": "初步学习阅读古典名著的方法。学习写读后感。"}, {"grade": "五年级下册", "unit": "第三单元", "theme": "有趣的汉字", "reading": "感受汉字的有趣，了解汉字文化。。学习搜集资料的基本方法。", "writing": "学写简单的研究性报告。", "raw": "感受汉字的有趣，了解汉字文化。学习搜集资料的基本方法。学写简单的研究性报告。"}, {"grade": "五年级下册", "unit": "第四单元", "theme": "爱国主义情怀", "reading": "通过课文中动作、语言、神态的描写，体会人物的内心。", "writing": "尝试运用动作、语言、神态描写，来表现人物内心。", "raw": "通过课文中动作、语言、神态的描写，体会人物的内心。尝试运用动作、语言、神态描写，来表现人物内心。"}, {"grade": "五年级下册", "unit": "第五单元", "theme": "字里行间众生相，大千世界你我他。", "reading": "学习描写人物的基本方法。", "writing": "初步运用描写人物的基本方法，尝试把一个人的特点写具体。", "raw": "学习描写人物的基本方法。初步运用描写人物的基本方法，尝试把一个人的特点写具体。"}, {"grade": "五年级下册", "unit": "第六单元", "theme": "思维的火花跨越时空，照亮昨天、今天、明天。", "reading": "理清故事的起因、发展、高潮和结局，了解人物的思维过程。", "writing": "根据情境编故事，注意情节的转折。", "raw": "理清故事的起因、发展、高潮和结局，了解人物的思维过程。根据情境编故事，注意情节的转折。"}, {"grade": "五年级下册", "unit": "第七单元", "theme": "足下万里，移步换景，寰宇纷呈万花筒。", "reading": "体会景物的静态美和动态美。", "writing": "搜集资料，介绍一个地方。", "raw": "体会景物的静态美和动态美。搜集资料，介绍一个地方。"}, {"grade": "五年级下册", "unit": "第八单元", "theme": "幽默给我们带来笑声，也给我们带来思考……", "reading": "感受课文中巧妙的对话和风趣的语言。", "writing": "看漫画，写出自己的想法。", "raw": "感受课文中巧妙的对话和风趣的语言。看漫画，写出自己的想法。"}, {"grade": "六年级上册", "unit": "第一单元", "theme": "背起行装出发吧，去触摸山川湖海的心跳", "reading": "感受课文中丰富的想象，深入理解内容", "writing": "习作时发挥想象，把重点部分写详细一些。", "raw": "感受课文中丰富的想象，深入理解内容习作时发挥想象，把重点部分写详细一些。"}, {"grade": "六年级上册", "unit": "第二单元", "theme": "重温革命岁月，把历史的声音留在心里", "reading": "了解文章是怎样点面结合写场面的。", "writing": "尝试运用点面结合的写法记一次活动。", "raw": "了解文章是怎样点面结合写场面的。尝试运用点面结合的写法记一次活动。"}, {"grade": "六年级上册", "unit": "第三单元", "theme": "读书好比串门", "reading": "根据不同的阅读目的，选用恰当的阅读方法。", "writing": "试着在写失望时，融入感情，表达看法。", "raw": "根据不同的阅读目的，选用恰当的阅读方法。试着在写失望时，融入感情，表达看法。"}, {"grade": "六年级上册", "unit": "第四单元", "theme": "小说大多是虚构的，却又有生活的影子", "reading": "读小说，关注情节、环境，感受人物形象。", "writing": "发挥想象，编创生活故事。", "raw": "读小说，关注情节、环境，感受人物形象。发挥想象，编创生活故事。"}, {"grade": "六年级上册", "unit": "第五单元", "theme": "以立意为宗，不能以人为本", "reading": "体会文章是怎样围绕中心意思来写的。", "writing": "从不同方面或选取不同事例，表达中心意思。", "raw": "体会文章是怎样围绕中心意思来写的。从不同方面或选取不同事例，表达中心意思。"}, {"grade": "六年级上册", "unit": "第六单元", "theme": "我们是大地的一部分，大地也是我们的一部分", "reading": "抓住关键句，把握文章的主要观点。", "writing": "学写倡议书", "raw": "抓住关键句，把握文章的主要观点。学写倡议书"}, {"grade": "六年级上册", "unit": "第七单元", "theme": "一首歌，一幅画，一件手工作品……一段美好的", "reading": "借助语言文字，展开想象，体会艺术之美。", "writing": "写自己的拿手好戏，把感受、看法写出来", "raw": "借助语言文字，展开想象，体会艺术之美。写自己的拿手好戏，把感受、看法写出来"}, {"grade": "六年级上册", "unit": "第八单元", "theme": "有的人活着，他已经死，有的人死了，他还活着。", "reading": "借助相关资料，理解课文主要内容。", "writing": "通过事情写一个人，表达出自己的情感。", "raw": "借助相关资料，理解课文主要内容。通过事情写一个人，表达出自己的情感。"}, {"grade": "六年级下册", "unit": "第一单元", "theme": "百里不同风，千里不同俗", "reading": "阅读时，分清内容的主次，体会作者是如何详写主要部分的", "writing": "习作时，注意抓重点，写出特点。", "raw": "阅读时，分清内容的主次，体会作者是如何详写主要部分的。习作时，注意抓重点，写出特点。"}, {"grade": "六年级下册", "unit": "第二单元", "theme": "跟谁外国文学名著的脚步，去发现更广阔的世界", "reading": "把握作品梗概，把握名著的主要内容。。就印象深刻的人物和情节交流感受。", "writing": "学习写作品梗概", "raw": "把握作品梗概，把握名著的主要内容。就印象深刻的人物和情节交流感受。学习写作品梗概"}, {"grade": "六年级下册", "unit": "第三单元", "theme": "让真情在笔尖流露", "reading": "体会文章是怎样表达情感的", "writing": "习作时，选择合适的内容写出真情实感。", "raw": "体会文章是怎样表达情感的。习作时，选择合适的内容写出真情实感。"}, {"grade": "六年级下册", "unit": "第四单元", "theme": "人生自古谁无死，留取丹青照汗青", "reading": "阅读时，关注神态、言行的描写，体会人物品质。查阅相关资料，加深对课文的理解", "writing": "习作时，选择合适的方式进行表达。", "raw": "阅读时，关注神态、言行的描写，体会人物品质。查阅相关资料，加深对课文的理解。习作时，选择合适的方式进行表达。"}, {"grade": "六年级下册", "unit": "第五单元", "theme": "科学发现的机遇，总是等着好奇而又爱思考的人", "reading": "体会用具体事例说明观点的方法。", "writing": "展开想象，写科幻故事。", "raw": "体会用具体事例说明观点的方法。展开想象，写科幻故事。"}, {"grade": "六年级下册", "unit": "第六单元", "theme": "那些种在校园里长不大的记忆，那些留在岁月中忘不掉的纯真", "reading": "学习整理资料的方法。", "writing": "策划简单的校园活动，学写策划书。", "raw": "学习整理资料的方法。策划简单的校园活动，学写策划书。"}];
+const APP_VERSION = '1.0.0';
+const LS_KEY = 'reading_base_v1';
+let state = load() || {notes:{}, stars:{}};
+let cur = {grade:null, term:null, unitIdx:null};
+let navStack = [];
+
+const ICONS = {
+  '预测猜想':'🔮','想象画面':'☁️','大胆提问':'💭','批注阅读':'✏️','抓取关键':'🔑',
+  '动静之美':'🌊','读懂人物':'🧑','体悟情感':'💗','破解词语':'🔍','复述故事':'🔁',
+  '梳理信息':'🗂️','说明方法':'💡','把握中心':'🎯','留心观察':'👀','文体奥秘':'📚',
+  '阅读提速':'⚡','点面结合':'🔘','阅读力':'📖'
+};
+const PRAISE = ['啪嗒！这颗星亮啦，你真棒～','又点亮一颗，小苗又长高一点！','读书像浇水，越读越茁壮🌱','哇，这个本领被你拿下啦！','芽芽给你鼓掌👏'];
+
+function load(){ try{return JSON.parse(localStorage.getItem(LS_KEY));}catch(e){return null;} }
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); return true; }
+  catch(e){ toast('存储空间不足，导出备份可释放空间 💾'); console.warn('save failed:', e); return false; }
+}
+function isValidBackup(o){
+  if(!o || typeof o!=='object' || Array.isArray(o)) return false;
+  if(typeof o.notes!=='object' || o.notes===null || Array.isArray(o.notes)) return false;
+  if(typeof o.stars!=='object' || o.stars===null || Array.isArray(o.stars)) return false;
+  for(const k in o.notes){ if(typeof o.notes[k]!=='string') return false; }
+  for(const k in o.stars){ if(typeof o.stars[k]!=='boolean') return false; }
+  return true;
+}
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500); }
+function uid(d){ return d.grade+'|'+d.unit; }
+function rnd(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+function classifyTag(r){
+  if(/预测|猜想/.test(r)) return '预测猜想';
+  if(/想象/.test(r)) return '想象画面';
+  if(/提问|问题/.test(r)) return '大胆提问';
+  if(/批注/.test(r)) return '批注阅读';
+  if(/关键语句|关键句/.test(r)) return '抓取关键';
+  if(/静态|动态|动静/.test(r)) return '动静之美';
+  if(/人物|形象|品质|内心|神态/.test(r)) return '读懂人物';
+  if(/情感|思想感情|真情/.test(r)) return '体悟情感';
+  if(/难懂|词语|理解/.test(r)) return '破解词语';
+  if(/复述/.test(r)) return '复述故事';
+  if(/梳理信息|信息/.test(r)) return '梳理信息';
+  if(/说明/.test(r)) return '说明方法';
+  if(/中心意思|立意|围绕/.test(r)) return '把握中心';
+  if(/观察/.test(r)) return '留心观察';
+  if(/童话|神话|小说|寓言|民间故事|名著/.test(r)) return '文体奥秘';
+  if(/速度|效率/.test(r)) return '阅读提速';
+  if(/点面|场面/.test(r)) return '点面结合';
+  return '阅读力';
+}
+function splitGrade(g){ const m=g.match(/^(.年级)([上下])册$/); return m?{name:m[1],t:m[2]==='上'?'上册':'下册'}:{name:g,t:''}; }
+function grades(){ const s=[]; DATA.forEach(d=>{const n=splitGrade(d.grade).name; if(!s.includes(n)) s.push(n);}); return s; }
+function termsOf(g){ const ts=new Set(); DATA.filter(d=>splitGrade(d.grade).name===g).forEach(d=>ts.add(splitGrade(d.grade).t)); return [...ts]; }
+function unitsOf(g,t){ return DATA.filter(d=>{const s=splitGrade(d.grade); return s.name===g && s.t===t;}); }
+
+function show(id){ ['home','terms','units','detail','growth'].forEach(s=>document.getElementById(s).classList.add('hidden')); document.getElementById(id).classList.remove('hidden');
+  document.getElementById('backBtn').classList.toggle('hidden', id==='home'); window.scrollTo(0,0); }
+function goBack(){
+  if(navStack.length===0){ show('home'); return; }
+  const prev=navStack.pop();
+  if(prev==='home') show('home');
+  else if(prev==='terms'){ cur.grade=null; renderTerms(); show('terms'); }
+  else if(prev==='units'){ cur.term=null; renderUnits(); show('units'); }
+}
+function push(n){ navStack.push(n); }
+
+function renderHome(){
+  const g=grades(); const box=document.getElementById('gradeGrid'); box.innerHTML='';
+  g.forEach(name=>{
+    const total=DATA.filter(d=>splitGrade(d.grade).name===name).length;
+    const el=document.createElement('div'); el.className='tile';
+    el.innerHTML=`<div class="big">${name}</div><div class="sm">${total} 个阅读本领</div><div class="deco">🌱</div>`;
+    el.onclick=()=>{ cur.grade=name; push('home'); renderTerms(); show('terms'); };
+    box.appendChild(el);
+  });
+  show('home');
+}
+function renderTerms(){
+  document.getElementById('termsTitle').textContent=cur.grade+' · 选择册次';
+  const ts=termsOf(cur.grade); const box=document.getElementById('termGrid'); box.innerHTML='';
+  ts.forEach(t=>{
+    const us=unitsOf(cur.grade,t); const lit=us.filter(d=>state.stars[uid(d)]).length;
+    const el=document.createElement('div'); el.className='tile';
+    el.innerHTML=`<div class="big">${t}</div><div class="sm">${us.length} 个单元 · 已点亮 ${lit}★</div><div class="deco">${t==='上册'?'🌞':'🌙'}</div>`;
+    el.onclick=()=>{ cur.term=t; push('terms'); renderUnits(); show('units'); };
+    box.appendChild(el);
+  });
+}
+function renderUnits(){
+  document.getElementById('unitsTitle').textContent=`${cur.grade} ${cur.term} · 单元阅读本领`;
+  const us=unitsOf(cur.grade,cur.term); const box=document.getElementById('unitList'); box.innerHTML='';
+  us.forEach((d,i)=>{
+    const num=d.unit.replace(/[^0-9]/g,'')|| (i+1);
+    const tag=classifyTag(d.reading);
+    const lit=state.stars[uid(d)]?'<span class="star">★</span>':'<span style="color:#d9d2c4">☆</span>';
+    const el=document.createElement('div'); el.className='ucard';
+    el.innerHTML=`<div class="uicon">${ICONS[tag]||'📖'}</div><div class="uctx">
+      <h3>第 ${num} 单元 ${lit}</h3><div class="utheme">${d.theme}</div>
+      <div class="uread">${d.reading}</div><span class="tag">${tag}</span></div>`;
+    el.onclick=()=>{ cur.unitIdx=i; push('units'); renderDetail(); show('detail'); };
+    box.appendChild(el);
+  });
+}
+function renderDetail(){
+  const d=unitsOf(cur.grade,cur.term)[cur.unitIdx];
+  document.getElementById('dTag').textContent=classifyTag(d.reading);
+  document.getElementById('dTheme').textContent=d.theme;
+  document.getElementById('dReading').textContent=d.reading;
+  document.getElementById('dWriting').textContent=d.writing||'（本单元以阅读为主）';
+  const ta=document.getElementById('dNote'); ta.value=state.notes[uid(d)]||'';
+  ta.oninput=()=>{ clearTimeout(noteTimer); noteTimer=setTimeout(()=>saveNote(true),800); };
+  ta.onblur=()=>{ clearTimeout(noteTimer); saveNote(true); };
+  const lit=!!state.stars[uid(d)];
+  document.getElementById('starBtn').textContent=lit?'已点亮 · 再点取消':'点亮小星星';
+  document.getElementById('starState').textContent=lit?'★':'☆';
+  const enc=document.getElementById('encBox');
+  if(lit){ enc.style.display='flex'; enc.textContent='芽芽：'+rnd(PRAISE); } else enc.style.display='none';
+}
+function showGrowth(){
+  navStack=[]; const all=DATA.length;
+  const lit=Object.keys(state.stars).filter(k=>state.stars[k]).length;
+  const noteN=Object.keys(state.notes).filter(k=>(state.notes[k]||'').trim()).length;
+  document.getElementById('gStar').textContent=lit;
+  document.getElementById('gNote').textContent=noteN;
+  document.getElementById('gPct').textContent=Math.round(lit/all*100)+'%';
+  const box=document.getElementById('badgeBox'); box.innerHTML='';
+  const badges=[];
+  if(lit>=1) badges.push('🌱 破土芽芽 · 点亮第 1 颗');
+  if(lit>=10) badges.push('🌿 小绿苗 · 点亮 10 颗');
+  if(lit>=25) badges.push('🌳 茁壮树 · 点亮 25 颗');
+  if(lit>=all) badges.push('👑 满园星 · 全部点亮');
+  if(noteN>=5) badges.push('✏️ 小笔头 · 5 篇小记');
+  if(badges.length===0) box.innerHTML='<span class="empty">还没有徽章，去点亮第一颗星吧 🌟</span>';
+  else badges.forEach(b=>{const s=document.createElement('span'); s.className='badge'; s.textContent=b; box.appendChild(s);});
+  drawTree(lit, all);
+  show('growth');
+}
+function drawTree(lit, all){
+  const svg=document.getElementById('treeSvg');
+  const ratio=all? lit/all : 0;
+  const leafCount=Math.round(ratio*16);
+  // 预置 16 片叶的环形坐标（围绕树冠）
+  const pos=[];
+  for(let i=0;i<16;i++){ const a=(i/16)*Math.PI*2; pos.push([75+Math.cos(a)*34, 64+Math.sin(a)*30]); }
+  let leaves='';
+  for(let i=0;i<leafCount;i++){ leaves+=`<circle cx="${pos[i][0].toFixed(1)}" cy="${pos[i][1].toFixed(1)}" r="9" fill="#a7e3d8"/>`; }
+  const crown = lit>0 ? '#34b3a0' : '#cfd8d6';
+  svg.innerHTML=`
+    <rect x="71" y="92" width="8" height="56" rx="4" fill="#9a8f7d"/>
+    <circle cx="75" cy="64" r="40" fill="${crown}" opacity=".9"/>
+    <circle cx="75" cy="64" r="40" fill="none" stroke="#34b3a0" stroke-width="1.5" opacity=".4"/>
+    ${leaves}
+    <circle cx="64" cy="60" r="3" fill="#fff"/><circle cx="86" cy="60" r="3" fill="#fff"/>
+    <circle cx="64" cy="60" r="1.6" fill="#3a4a52"/><circle cx="86" cy="60" r="1.6" fill="#3a4a52"/>
+    <path d="M66 72q9 7 18 0" stroke="#3a4a52" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+}
+function toggleStar(){
+  const d=unitsOf(cur.grade,cur.term)[cur.unitIdx]; if(!d) return; const k=uid(d);
+  const prev=!!state.stars[k];
+  const now=!prev;
+  state.stars[k]=now;
+  if(save()){
+    if(now){
+      const st=document.getElementById('starState'); st.textContent='★'; st.classList.remove('star-pop'); void st.offsetWidth; st.classList.add('star-pop');
+      toast(rnd(PRAISE));
+    }
+  } else {
+    state.stars[k]=prev; // 回滚内存态，使与未成功的持久化保持一致，避免"假成功"
+  }
+  renderDetail();
+}
+let noteTimer=null;
+function saveNote(silent){
+  const d=unitsOf(cur.grade,cur.term)[cur.unitIdx]; if(!d) return; const k=uid(d);
+  state.notes[k]=document.getElementById('dNote').value; save();
+  if(!silent) toast('小记存好啦 🌿');
+}
+function exportData(){
+  const data={version:APP_VERSION, notes:state.notes, stars:state.stars};
+  const json=JSON.stringify(data,null,2);
+  const fileName='阅读基石备份_'+new Date().toISOString().slice(0,10)+'.json';
+  const file=new File([json], fileName, {type:'application/json'});
+  // 优先系统分享（微信/iOS 可落地文件）
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    navigator.share({files:[file], title:'阅读基石备份'}).then(()=>toast('已分享备份')).catch(()=>{});
+    return;
+  }
+  if(navigator.share){
+    navigator.share({title:'阅读基石备份', text:json}).then(()=>toast('已分享备份')).catch(()=>downloadBlob(json,fileName));
+    return;
+  }
+  // 浏览器下载被拦截时，剪贴板兜底
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(json).then(()=>toast('备份已复制到剪贴板，请粘贴保存 📋')).catch(()=>downloadBlob(json,fileName));
+    return;
+  }
+  downloadBlob(json,fileName);
+}
+function downloadBlob(json, fileName){
+  const blob=new Blob([json],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fileName;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 100);
+  toast('已导出备份');
+}
+function importData(){ document.getElementById('impFile').click(); }
+function doImport(e){
+  const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const o=JSON.parse(r.result);
+      if(!isValidBackup(o)){ toast('备份格式不对，请检查文件'); return; }
+      if(!confirm('导入会覆盖当前的阅读小记和星星，确定继续吗？')) return;
+      state={notes:o.notes, stars:o.stars}; save(); toast('备份已导入 ✅'); renderHome();
+    }catch(err){ toast('文件格式不对'); }
+  };
+  r.readAsText(f);
+  e.target.value='';
+}
+window.addEventListener('beforeunload', ()=>{
+  if(noteTimer){ clearTimeout(noteTimer);
+    const d=unitsOf(cur.grade,cur.term)[cur.unitIdx];
+    if(d){ state.notes[uid(d)]=document.getElementById('dNote').value; save(); }
+  }
+});
+renderHome();
+</script>
+</body>
+</html>
